@@ -39,6 +39,20 @@ public class Gruppo extends Target {
     }
 
     
+    /**
+     * Restituisce la lista di tutti i dispositivi.
+     * Utilizza la ricorsione per restituire anche i figli dei gruppi innestati.
+     * Se il figlio è un Dispositivo singolo, mi darà se stesso.
+     * Se il figlio è un altro Gruppo si attiva la ricorsione!
+     */
+    @Override
+    public List<Dispositivo> getDispositivi() {
+        List<Dispositivo> tutti = new ArrayList<>();
+        for (Target t : figli) {
+            tutti.addAll(t.getDispositivi());
+        }
+        return tutti;
+    }
     
     /**
      * Restituisce una lista di dispositivi compatibili con il comando impartito.

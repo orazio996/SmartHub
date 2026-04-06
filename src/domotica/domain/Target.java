@@ -27,5 +27,6 @@ public abstract class Target {
      * Ritorna la lista dei dispositivi fisici all'interno di un gruppo.
      * (Compresi quelli dentro i gruppi interni).
      */
+    public abstract List<Dispositivo> getDispositivi();
     public abstract List<Dispositivo> getDispositiviCompatibili(Comando c);
 }

@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Simulatore di una Lampadina Smart.
+ * Simulatore di un Termostato Smart.
  */
-public class Lampadina implements Runnable{
+public class Termostato implements Runnable{
 	
 	private int porta;
     private String MAC;
@@ -21,7 +21,7 @@ public class Lampadina implements Runnable{
 	private static Map<String, String> stato;
 	//private Map<String, descParam> descrizioneStato
 	
-	public Lampadina(int porta, String MAC, String tipo, String marca, String modello) {
+	public Termostato(int porta, String MAC, String tipo, String marca, String modello) {
 		this.porta = porta;
 		this.MAC = MAC;
 		this.tipo = tipo;
@@ -29,14 +29,13 @@ public class Lampadina implements Runnable{
 		this.modello = modello;
 		stato = new HashMap<>();
 		//init stato
-		stato.put("luminosita", "0");
         stato.put("power", "OFF");
-        stato.put("colore", "bianco");
-        stato.put("lampeggio", "0");
+        stato.put("temperatura", "25");
+        stato.put("modalita", "AUTO");
 	}
 
 	@Override
-    public void run() {               
+    public void run() {      
         
         System.out.println("💡 Dispositivo " + MAC + " Avviato!");
         System.out.println("🏷️  Tipo: " + tipo + " | Marca: " + marca + " | Modello: " + modello);

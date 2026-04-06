@@ -34,7 +34,6 @@ public class DescDispositivo {
      */
     public boolean isCompatibile(Comando c) {
         if (c == null) return false;
-        
         DescParametro descParam = this.descParametri.get(c.getParam());
         if (descParam == null) {
             return false; 

@@ -48,7 +48,6 @@ public class DescParametro {
         if (this.readOnly) {
             return false;
         }
-
         // Controllo dei valori accettabili
         if (!this.valoriAccettati.isEmpty()) {
             return this.valoriAccettati.contains(valore);

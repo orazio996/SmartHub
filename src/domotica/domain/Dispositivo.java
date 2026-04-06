@@ -11,30 +11,35 @@ import java.util.Map;
  */
 public class Dispositivo extends Target {
 
-    private String indirizzo; 
-    private int porta;       
+    private String indirizzo;       
     private boolean statoConn; // online/offline
     private DescDispositivo descrizione; // info relative al dispositivo e descrizione del suo stato
     private Map<String, String> stato; // stato operativo del dispositivo
 
-    public Dispositivo(String id, String indirizzo, int porta, DescDispositivo descrizione) {
+    public Dispositivo(String id, String indirizzo, DescDispositivo descrizione) {
     	
         super(id); 
         this.indirizzo = indirizzo;
-        this.porta = porta;
         this.statoConn = true;
         this.descrizione = descrizione;
         this.stato = new HashMap<>();
     }
 
     public String getIndirizzo() { return indirizzo; }
-    public int getPorta() { return porta; }
     public boolean isOnline() { return statoConn; }
     public void setStatoConn(boolean statoConn) { this.statoConn = statoConn; }
     public DescDispositivo getDescrizione() { return descrizione; }
     public Map<String, String> getStato() { return new HashMap<>(stato); }
 
     
+    /**
+     * Restituiamo una lista contenente il dispositivo.
+     * Usa una lista anche per un solo dispositivo per supportare il polimorfismo.
+     */
+    @Override
+    public List<Dispositivo> getDispositivi() {
+        return List.of(this);
+    }
     
     /**
      * Se il comando è compatibile restituiamo una lista contenente il dispositivo.
@@ -47,6 +52,7 @@ public class Dispositivo extends Target {
         if (this.descrizione.isCompatibile(c)) {
             return Arrays.asList(this);
         }
+        System.out.println("⚠️[Warning] " + this.getId() + ": dispositivo incompatibile!");
         return new ArrayList<>();
     }
 
