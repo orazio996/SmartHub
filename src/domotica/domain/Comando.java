@@ -9,8 +9,8 @@ public class Comando {
     private String valore;
 
     public Comando(String param, String valore) {
-        if (param == null || param.trim().isEmpty()) {
-            throw new IllegalArgumentException("Il parametro non può essere vuoto");
+        if (valore == null || param == null || param.trim().isEmpty()) {
+            throw new IllegalArgumentException("Parametro e valore non possono essere nulli");
         }
         this.param = param;
         this.valore = valore;

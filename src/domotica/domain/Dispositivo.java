@@ -23,6 +23,10 @@ public class Dispositivo extends Target {
         this.statoConn = true;
         this.descrizione = descrizione;
         this.stato = new HashMap<>();
+        
+        for (String nomeParametro : descrizione.getDescParametri().keySet()) {
+            this.stato.put(nomeParametro, "SCONOSCIUTO"); 
+        }
     }
 
     public String getIndirizzo() { return indirizzo; }
@@ -61,8 +65,12 @@ public class Dispositivo extends Target {
      * e genera una TransizioneStato utile a definire l'evento relativo.
      */
     public TransizioneStato aggiornaStato(String parametro, String nuovoValore) {
-    	
-        String vecchioValore = this.stato.getOrDefault(parametro, "N/A");
+        
+        if (!this.stato.containsKey(parametro)) {
+            throw new IllegalArgumentException("Errore: Il parametro '" + parametro + "' non fa parte di questo dispositivo!");
+        }
+
+        String vecchioValore = this.stato.get(parametro);
         this.stato.put(parametro, nuovoValore);
         
         return new TransizioneStato(parametro, vecchioValore, nuovoValore, this.getId());

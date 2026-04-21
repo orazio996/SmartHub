@@ -1,7 +1,9 @@
 package domotica.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Rappresenta un raggruppamento di Dispositivi (es. "Luci Salotto", "Piano Terra").
@@ -26,16 +28,20 @@ public class Gruppo extends Target {
     public List<Target> getFigli() { return new ArrayList<>(figli); }
 
     public void addTarget(Target t) {
+    	if (t == null) {
+            throw new IllegalArgumentException("Impossibile aggiungere un target nullo al gruppo.");
+        }
         // Un gruppo non può aggiungere se stesso --> loop infinito!
-        if (t != null && !t.getId().equals(this.getId())) { 
+        if (!t.getId().equals(this.getId())) { 
             this.figli.add(t);
         }
     }
 
     public void removeTarget(Target t) {
-        if (t != null) {
-            this.figli.remove(t);
+    	if (t == null) {
+            throw new IllegalArgumentException("Impossibile rimuovere un target nullo dal gruppo.");
         }
+            this.figli.remove(t);
     }
 
     
@@ -47,11 +53,18 @@ public class Gruppo extends Target {
      */
     @Override
     public List<Dispositivo> getDispositivi() {
-        List<Dispositivo> tutti = new ArrayList<>();
-        for (Target t : figli) {
-            tutti.addAll(t.getDispositivi());
+        return new ArrayList<>(estraiDispositivi(new HashSet<>()));
+    }
+
+    private Set<Dispositivo> estraiDispositivi(Set<String> visitati) {
+        Set<Dispositivo> res = new HashSet<>();
+        
+        if (visitati.add(this.getId())) { 
+            for (Target t : figli) {
+                res.addAll(t instanceof Gruppo ? ((Gruppo) t).estraiDispositivi(visitati) : t.getDispositivi());
+            }
         }
-        return tutti;
+        return res;
     }
     
     /**
@@ -62,12 +75,17 @@ public class Gruppo extends Target {
      */
     @Override
     public List<Dispositivo> getDispositiviCompatibili(Comando c) {
-        List<Dispositivo> compatibili = new ArrayList<>();
+        return new ArrayList<>(estraiCompatibili(c, new HashSet<>()));
+    }
+
+    private Set<Dispositivo> estraiCompatibili(Comando c, Set<String> visitati) {
+        Set<Dispositivo> res = new HashSet<>();
         
-        for (Target figlio : figli) {
-            compatibili.addAll(figlio.getDispositiviCompatibili(c));
+        if (visitati.add(this.getId())) {
+            for (Target t : figli) {
+                res.addAll(t instanceof Gruppo ? ((Gruppo) t).estraiCompatibili(c, visitati) : t.getDispositiviCompatibili(c));
+            }
         }
-        
-        return compatibili;
+        return res;
     }
 }
