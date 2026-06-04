@@ -1,0 +1,85 @@
+package domotica.domain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Contiene tutti i target registrati nel sistema: dispositivi o gruppi.
+ */
+public class RegistroTargets {
+
+    private Map<String, Target> targets;
+
+    public RegistroTargets() {
+        this.targets = new HashMap<>();
+    }
+
+    /**
+     * Aggiunge un nuovo Target al registro.
+     */
+    public void addTarget(Target t) {
+        if (t == null || t.getId() == null) {
+            throw new IllegalArgumentException("Il Target o il suo ID non possono essere nulli.");
+        }
+        
+        if (this.targets.containsKey(t.getId())) {
+            throw new IllegalStateException("Errore: Esiste già un target registrato con ID '" + t.getId());
+        }
+        
+        this.targets.put(t.getId(), t);
+    }
+
+    /**
+     * Rimuove un Target dal sistema. 
+     * Rimuovere un dispositivo lo cancellerà dal sistema.
+     * Rimuovere un gruppo non cancellerà i dispositivi contenuti dal sistema.
+     */
+    public void removeTarget(String idTarget) {
+        if (idTarget != null) {
+            this.targets.remove(idTarget);
+        }
+    }
+
+    /**
+     * Recupera un target tramite il suo ID.
+     */
+    public Target getTarget(String idTarget) {
+        if (idTarget == null) {
+            return null;
+        }
+        return this.targets.get(idTarget);
+    }
+
+    /**
+     * Restituisce tutti i target registrati.
+     */
+    public List<Target> getAllTargets() {
+        return new ArrayList<>(this.targets.values());
+    }
+
+    
+    /**
+     * Restituisce la lista dei soli dispositivi. Non i gruppi.
+     */
+    public List<Dispositivo> getDispositivi() {
+        List<Dispositivo> risultato = new ArrayList<>();
+        for (Target t : targets.values()) {
+            List<Dispositivo> estratti = t.getDispositivi();
+            for (Dispositivo d : estratti) {
+                if (!risultato.contains(d)) {
+                    risultato.add(d);
+                }
+            }
+        }
+        return risultato;
+    }
+    
+    /**
+     * Cancella tutti i target.
+     */
+    public void factoryReset() {
+        this.targets.clear();
+    }
+}
