@@ -17,7 +17,7 @@ class RoutineTest {
 			return null;
 		}
 		@Override
-		public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+		public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -27,8 +27,8 @@ class RoutineTest {
         return new TargetFinto("Luce_Salotto");
     }
 
-    private Comando newComando() {
-        return new Comando("power", "ON"); 
+    private ComandoSingolo newComando() {
+        return new ComandoSingolo("power", "ON"); 
     }
 
     private Trigger newTrigger() {
@@ -42,7 +42,7 @@ class RoutineTest {
     @Test
     void testCostruttore() {
         Target t = newTarget();
-        Comando c = newComando();
+        ComandoSingolo c = newComando();
         Trigger tr = newTrigger();
 
         Routine routine = new Routine("Accensione Serali", t, c, tr);
@@ -60,10 +60,10 @@ class RoutineTest {
     @Test
     void testCostruttoreSenzaNome() {
         Target t = newTarget();
-        Comando c = newComando();
+        ComandoSingolo c = newComando();
         Trigger tr = newTrigger();
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             new Routine(null, t, c, tr);
         });
 
@@ -82,18 +82,18 @@ class RoutineTest {
     @Test
     void testCostruttoreNullParams() {
         Target t = newTarget();
-        Comando c = newComando();
+        ComandoSingolo c = newComando();
         Trigger tr = newTrigger();
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             new Routine("Test Routine", null, c, tr);
         });
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             new Routine("Test Routine", t, null, tr);
         });
 
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             new Routine("Test Routine", t, c, null);
         });
     }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="500.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="domotica.ui.fx.ArchivioReportsController">
+   <children>
+      <Label text="REPORT SALVATI A SISTEMA" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-padding: 10;" />
+      
+      <SplitPane dividerPositions="0.35" VBox.vgrow="ALWAYS">
+         <items>
+            <ListView fx:id="listaReports" />
+            
+            <TextArea fx:id="areaDettaglio" editable="false" wrapText="true" style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 13px;" />
+         </items>
+      </SplitPane>
+   </children>
+</VBox>

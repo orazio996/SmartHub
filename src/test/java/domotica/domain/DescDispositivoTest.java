@@ -43,14 +43,14 @@ public class DescDispositivoTest {
         DescDispositivo desc = new DescDispositivo("marca", "tipo", "modello", mappaBase);
         
         assertFalse(desc.isCompatibile(null), "Comando nullo deve essere rifiutato");
-        assertFalse(desc.isCompatibile(new Comando("volume", "50")), "Parametro non in mappa deve essere rifiutato");
+        assertFalse(desc.isCompatibile(new ComandoSingolo("volume", "50")), "Parametro non in mappa deve essere rifiutato");
     }
 
     @Test
     public void testIsCompatibile_HappyPath() {
         DescDispositivo desc = new DescDispositivo("marca", "tipo", "modello", mappaBase);
         
-        assertTrue(desc.isCompatibile(new Comando("power", "ON")), "Valore valido -> true");
-        assertFalse(desc.isCompatibile(new Comando("power", "STANDBY")), "Valore non valido -> false");
+        assertTrue(desc.isCompatibile(new ComandoSingolo("power", "ON")), "Valore valido -> true");
+        assertFalse(desc.isCompatibile(new ComandoSingolo("power", "STANDBY")), "Valore non valido -> false");
     }
 }

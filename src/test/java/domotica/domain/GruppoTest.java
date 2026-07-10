@@ -50,9 +50,9 @@ public class GruppoTest {
     // TC-03: Controllo Anti-Loop
     @Test
     public void testAddTarget_StessoGruppo() {
-    	gruppo.addTarget(gruppo);
-        
-        assertTrue(gruppo.getFigli().isEmpty(), "Deve bloccare l'inserimento del gruppo a se stesso");
+        assertThrows(IllegalArgumentException.class, ()->{
+        	gruppo.addTarget(gruppo);
+        },"Deve bloccare l'inserimento del gruppo a se stesso");
     }
 
     // TC-04: test della ricorsione
@@ -102,18 +102,18 @@ public class GruppoTest {
     
     @Test
     public void testGetDispositiviCompatibili_FiltraCorrettamente() {
-        Comando comando = new Comando("luce", "ON");
+        ComandoSingolo comando = new ComandoSingolo("luce", "ON");
 
         Target targetCompatibile = new Target("targetCompatibile") {
             @Override public List<Dispositivo> getDispositivi() { return new ArrayList<>(); }
-            @Override public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+            @Override public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
                 return List.of(new Dispositivo("devCompatibile", "ip", newDescParam()));
             }
         };
 
         Target targetIncompatibile = new Target("targetIncompatibile") {
             @Override public List<Dispositivo> getDispositivi() { return new ArrayList<>(); }
-            @Override public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+            @Override public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
                 return new ArrayList<>();
             }
         };
@@ -147,7 +147,7 @@ public class GruppoTest {
             }
 
             @Override
-            public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+            public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
                 return new ArrayList<>();
             }
         };

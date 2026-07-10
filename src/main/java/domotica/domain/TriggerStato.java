@@ -1,6 +1,7 @@
 package domotica.domain;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 public class TriggerStato extends Trigger {
     
@@ -21,11 +22,16 @@ public class TriggerStato extends Trigger {
         
         this.targetOsservato = targetOsservato;
         
-        Gson gson = new Gson();
-        DatiTriggerStato dati = gson.fromJson(triggerJson, DatiTriggerStato.class);
+        DatiTriggerStato dati;
+		try {
+			Gson gson = new Gson();
+			dati = gson.fromJson(triggerJson, DatiTriggerStato.class);
+		} catch (JsonSyntaxException e) {
+			throw new IllegalArgumentException("Formato trigger non valido.", e);
+		}
         
         if (dati == null || dati.paramOsservato == null || dati.operatore == null || dati.soglia == null) {
-            throw new IllegalArgumentException("Il JSON del trigger è incompleto o malformato");
+            throw new IllegalArgumentException("Il JSON del trigger è incompleto");
         }
 
         this.paramOsservato = dati.paramOsservato;

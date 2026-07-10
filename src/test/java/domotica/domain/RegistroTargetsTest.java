@@ -109,7 +109,7 @@ public class RegistroTargetsTest {
                 return List.of(d1, d2); // registro conttiene gia d1
             }
             @Override
-            public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+            public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
                 return null;
             }
         };
@@ -134,7 +134,7 @@ public class RegistroTargetsTest {
             }
 
             @Override
-            public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+            public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
                 return null;
             }
         };

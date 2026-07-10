@@ -7,4 +7,5 @@ package domotica.services;
  */
 public interface MsgListener {
     void msgRete(String idTarget, String tipo, String payload);
+    void msgErrore(String errore);
 }

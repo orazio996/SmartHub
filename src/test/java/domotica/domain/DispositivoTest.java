@@ -67,7 +67,8 @@ public class DispositivoTest {
  // TEST 4: Comando valido
     @Test
     public void testGetDispositiviCompatibili_ComandoValido() {
-        Comando comandoOk = new Comando("power", "ON");
+    	dispositivo.setStatoConn(true);
+        ComandoSingolo comandoOk = new ComandoSingolo("power", "ON");
         List<Dispositivo> compatibili = dispositivo.getDispositiviCompatibili(comandoOk);
         
         assertEquals(1, compatibili.size());
@@ -77,7 +78,7 @@ public class DispositivoTest {
     // TEST 5: Comando non valido
     @Test
     public void testGetDispositiviCompatibili_ComandoInvalido() {
-        Comando comandoErrato = new Comando("volume", "88");
+        ComandoSingolo comandoErrato = new ComandoSingolo("volume", "88");
         List<Dispositivo> compatibili = dispositivo.getDispositiviCompatibili(comandoErrato);
         
         assertTrue(compatibili.isEmpty());
@@ -86,11 +87,6 @@ public class DispositivoTest {
     // TEST 6: parametro stato inesistente
     @Test
     public void testAggiornaStato_ParametroInesistente() {
-        
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
-            dispositivo.aggiornaStato("temperatura", "22.5");
-        });
-        
-        assertTrue(e.getMessage().contains("non fa parte"));
+        assertNull(dispositivo.aggiornaStato("temperatura", "22.5"));
     }
 }

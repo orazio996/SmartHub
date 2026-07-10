@@ -4,14 +4,18 @@ package domotica.services;
 
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Objects;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 /**
  * Servizio di comunicazione tramite Socket TCP.
@@ -30,7 +34,9 @@ public class ServizioReteTCP implements ServizioRete{
      * e attende una conferma dal dispositivo.
      */
 	@Override
-    public void send(RichiestaSH req, String dest) throws Exception {
+    public void send(RichiestaSH req, String dest) throws IOException {
+		
+		Objects.requireNonNull(dest, "La destinazione non può essere nulla");
 		
 		String[] parti = dest.split(":");
         if (parti.length != 2) {
@@ -54,14 +60,20 @@ public class ServizioReteTCP implements ServizioRete{
             String risposta = in.readLine();
 
             if (risposta == null) {
-                throw new Exception("Nessuna risposta ricevuta.");
+                throw new IOException("[ErroreRete] Nessuna risposta ricevuta.");
             }
 
-            JsonObject jsonRes = JsonParser.parseString(risposta).getAsJsonObject();
+            JsonObject jsonRes ;
+            try {
+                jsonRes = JsonParser.parseString(risposta).getAsJsonObject();
+            } catch (JsonSyntaxException | IllegalStateException e) {
+                throw new IOException("[ErroreRete] Formato risposta non valido.", e);
+            }
+
             
             if (jsonRes.has("status") && jsonRes.get("status").getAsString().equals("ERROR")) {
                 String msgErrore = jsonRes.has("msg") ? jsonRes.get("msg").getAsString() : "Errore sconosciuto";
-                throw new Exception("Comando rifiutato dal dispositivo: " + msgErrore);
+                throw new IOException("[ErroreRete] Comando rifiutato dal dispositivo: " + msgErrore);
             }
             
             System.out.println("\n[RETE] Ricevuta risposta: " + risposta);
@@ -94,53 +106,17 @@ public class ServizioReteTCP implements ServizioRete{
 	                    }
 
 
-	                } catch (Exception e) {
-	                    System.err.println("[RETE] Pacchetto scartato per errore: " + e.getMessage());
-	                }
+	                } catch (IOException e) {
+	                    System.err.println("[ErroreRete] Errore connessione col client");
+	                } catch ( JsonParseException | IllegalStateException e) {
+		            	System.err.println("[ErroreRete] Ricevuto messaggio non valido. Pacchetto scartato." + e.getMessage());
+		            }
 	            }
-	        } catch (Exception e) {
-	            System.err.println("[RETE] Impossibile aprire il ServerSocket sulla porta " + portaMonitoraggio);
-	            e.printStackTrace();
+	        } catch (IOException e) {
+	            System.err.println("[ErroreRete] Impossibile avviare il server sulla porta " + portaMonitoraggio);
+	            listener.msgErrore("Impossibile avviare il server sulla porta " + portaMonitoraggio);
 	        }
 	    }).start();
 	}
 }
-//	@Override
-//	public CompletableFuture<String> listen() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-	
-//	private ParamStato parseRisposta(String res) throws Exception {
-//		
-//
-//        String response = res.replaceAll("\\s+", ""); 
-//        if (response.contains("\"status\":\"OK\"")) {
-//        	
-//        	String parametro = null;
-//        	String nuovoValore = null;
-//        	
-//        	if (response.contains("\"parametro\":\"")) {
-//                int pStart = response.indexOf("\"parametro\":\"") + 13;
-//                int pEnd = response.indexOf("\"", pStart);
-//                if (pStart > 12 && pEnd > pStart) {
-//                    parametro = response.substring(pStart, pEnd);
-//                }
-//            }
-//            
-//            if (response.contains("\"valore\":\"")) {
-//                int startIndex = response.indexOf("\"valore\":\"") + 10;
-//                int endIndex = response.indexOf("\"", startIndex);
-//                if (startIndex > 9 && endIndex > startIndex) {
-//                    nuovoValore = response.substring(startIndex, endIndex);
-//                }
-//            }
-//            return new ParamStato(parametro, nuovoValore);        
-//            
-//        } else {
-//            // es. risposta: {"status":"ERROR", "msg":"Valore troppo alto"})
-//            throw new Exception("Il dispositivo ha rifiutato il comando: " + res);
-//        }
-//	}
-//
-//}
+

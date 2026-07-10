@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox spacing="15.0" style="-fx-background-color: #f9f9f9; -fx-padding: 20;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="domotica.ui.fx.CreaRoutineController">
+    
+    <Label text="CREA NUOVA ROUTINE" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+    <Separator />
+
+    <Label text="1. Informazioni Generali" style="-fx-font-weight: bold;" />
+    <GridPane hgap="10" vgap="10">
+        <Label text="Nome Routine:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="0" prefWidth="250" />
+        
+        <Label text="Target (ID):" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="txtIdTarget" promptText="Es. LampadaSalotto" GridPane.columnIndex="1" GridPane.rowIndex="1" prefWidth="250" />
+        
+        <Label text="Tipo Trigger:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <ComboBox fx:id="cmbTipo" GridPane.columnIndex="1" GridPane.rowIndex="2" prefWidth="250" />
+    </GridPane>
+
+    <Label text="2. Azione da Eseguire" style="-fx-font-weight: bold;" />
+    <HBox spacing="10">
+        <TextField fx:id="txtCmdParametro" promptText="Parametro (es. power)" prefWidth="180" />
+        <TextField fx:id="txtCmdValore" promptText="Valore (es. ON)" prefWidth="180" />
+    </HBox>
+
+    <Label text="3. Impostazioni Trigger" style="-fx-font-weight: bold;" />
+    <StackPane alignment="TOP_LEFT">
+        
+        <VBox fx:id="boxTriggerEvento" spacing="10" visible="false">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Se:" />
+                <TextField fx:id="txtTargetOsservato" promptText="ID Target Osservato" prefWidth="150" />
+                <TextField fx:id="txtParamOsservato" promptText="Parametro" prefWidth="120" />
+                <ComboBox fx:id="cmbOperatore" prefWidth="75" />
+                <TextField fx:id="txtSoglia" promptText="Soglia/Valore" prefWidth="130" />
+            </HBox>
+        </VBox>
+
+        <VBox fx:id="boxTriggerTempo" spacing="10" visible="false">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Orario (HH:mm):" />
+                <TextField fx:id="txtOrario" promptText="Es. 18:30" prefWidth="100" />
+            </HBox>
+            <Label text="Giorni di ripetizione:" />
+            <HBox spacing="5" fx:id="boxGiorni">
+                <CheckBox text="LUN" userData="MONDAY" />
+                <CheckBox text="MAR" userData="TUESDAY" />
+                <CheckBox text="MER" userData="WEDNESDAY" />
+                <CheckBox text="GIO" userData="THURSDAY" />
+                <CheckBox text="VEN" userData="FRIDAY" />
+                <CheckBox text="SAB" userData="SATURDAY" />
+                <CheckBox text="DOM" userData="SUNDAY" />
+            </HBox>
+        </VBox>
+    </StackPane>
+
+    <Label fx:id="lblFeedback" textFill="RED" style="-fx-font-weight: bold;" />
+    <Button text="Salva Routine" onAction="#salvaRoutine" style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" />
+
+</VBox>

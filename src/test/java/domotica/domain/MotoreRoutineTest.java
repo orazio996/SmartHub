@@ -19,15 +19,16 @@ class MotoreRoutineTest {
         String targetRicevuto = null;
 
         public ControllerTargetsFinto() { 
-            super(null, null); 
+            super(null, null, null); 
         }
 
         @Override
-        public void eseguiComando(String param, String valore, String idTarget) {
-            this.isComandoEseguito = true;
-            this.paramRicevuto = param;
-            this.valoreRicevuto = valore;
+        public void eseguiComando(Comando c, String idTarget, String source) {
+        	this.isComandoEseguito = true;
             this.targetRicevuto = idTarget;
+            ComandoSingolo cs = (ComandoSingolo) c;
+            this.paramRicevuto = cs.getParam();
+            this.valoreRicevuto = cs.getValore();
         }
     }
 
@@ -42,7 +43,7 @@ class MotoreRoutineTest {
 			return null;
 		}
 		@Override
-		public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+		public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -63,7 +64,7 @@ class MotoreRoutineTest {
     }
 
     private Evento creaEvento(String parametro, String nuovoValore, String target) {
-        return new Evento("CAMBIO_STATO", target, List.of(new TransizioneStato(parametro, "vecchio", nuovoValore, target)));
+        return new Evento("Cmd", target, List.of(new TransizioneStato(parametro, "vecchio", nuovoValore, target)));
     }
 
     
@@ -72,7 +73,7 @@ class MotoreRoutineTest {
     void testAddRoutine() {
         Target t = new TargetFinto("Termostato");
         Target tOss = new TargetFinto("SensoreTemperatura");
-        Comando c = new Comando("power", "ON");
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
         Trigger tr = new TriggerStato("{\"paramOsservato\": \"temperatura\", \"operatore\": \"<\", \"soglia\": \"18\"}", tOss);
         
         Routine r = new Routine("Riscaldamento", t, c, tr);
@@ -87,7 +88,7 @@ class MotoreRoutineTest {
     void testOnEvento_HappyPath() {
         Target t = new TargetFinto("Termostato");
         Target tOss = new TargetFinto("SensoreTemperatura");
-        Comando c = new Comando("power", "ON");
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
         Trigger tr = new TriggerStato("{\"paramOsservato\": \"temperatura\", \"operatore\": \"<\", \"soglia\": \"18\"}", tOss);
         
         Routine r = new Routine("Riscaldamento", t, c, tr); 
@@ -109,7 +110,7 @@ class MotoreRoutineTest {
     void testOnEvento_CondizioneNonSoddisfatta() {
     	Target t = new TargetFinto("Termostato");
         Target tOss = new TargetFinto("SensoreTemperatura");
-        Comando c = new Comando("power", "ON");
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
         Trigger tr = new TriggerStato("{\"paramOsservato\": \"temperatura\", \"operatore\": \"<\", \"soglia\": \"18\"}", tOss);
         
         Routine r = new Routine("Riscaldamento", t, c, tr); 
@@ -128,7 +129,7 @@ class MotoreRoutineTest {
     void testOnEvento_RoutineDisabilitata() {
     	Target t = new TargetFinto("Termostato");
         Target tOss = new TargetFinto("SensoreTemperatura");
-        Comando c = new Comando("power", "ON");
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
         Trigger tr = new TriggerStato("{\"paramOsservato\": \"temperatura\", \"operatore\": \"<\", \"soglia\": \"18\"}", tOss);
         
         Routine r = new Routine("Riscaldamento", t, c, tr); 
@@ -162,7 +163,7 @@ class MotoreRoutineTest {
     @Test
     void testSchedule_RoutineTemporale_HappyPath() throws InterruptedException {
         Target t = new TargetFinto("Irrigatore");
-        Comando c = new Comando("power", "ON");
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
         TriggerTemporaleFinto tr = new TriggerTemporaleFinto();
         
         Routine r = new Routine("Irrigazione", t, c, tr);
@@ -183,7 +184,7 @@ class MotoreRoutineTest {
     @Test
     void testSchedule_RoutineTemporaleDisabilitata() throws InterruptedException {
         Target t = new TargetFinto("Irrigatore");
-        Comando c = new Comando("power", "ON");
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
         TriggerTemporaleFinto tr = new TriggerTemporaleFinto();
         
         Routine r = new Routine("Irrigazione", t, c, tr);

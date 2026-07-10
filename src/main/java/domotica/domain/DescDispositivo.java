@@ -32,7 +32,7 @@ public class DescDispositivo {
     /**
      * Verifica se il Comando può essere eseguito da questo dispositivo.
      */
-    public boolean isCompatibile(Comando c) {
+    public boolean isCompatibile(ComandoSingolo c) {
         if (c == null) return false;
         DescParametro descParam = this.descParametri.get(c.getParam());
         if (descParam == null) {

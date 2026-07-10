@@ -17,7 +17,7 @@ class TriggerStatoTest {
 			return null;
 		}
 		@Override
-		public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+		public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
 			// TODO Auto-generated method stub
 			return null;
 		}

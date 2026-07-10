@@ -1,0 +1,78 @@
+{
+  "sequenze": [
+    {
+      "id": "SEQ-01",
+      "displayName": "Risveglio Salotto",
+      "comandi": [
+        {
+          "param": "posizione",
+          "valore": "100"
+        },
+        {
+          "param": "tempTarget",
+          "valore": "22.5"
+        },
+        {
+          "param": "wait",
+          "valore": "2000"
+        },
+        {
+          "param": "colore",
+          "valore": "BIANCO"
+        },
+        {
+          "param": "luminosita",
+          "valore": "80"
+        }
+      ]
+    },
+    {
+      "id": "SEQ-02",
+      "displayName": "Atmosfera Relax / Cinema",
+      "comandi": [
+        {
+          "param": "posizione",
+          "valore": "1"
+        },
+        {
+          "param": "colore",
+          "valore": "BLU"
+        },
+        {
+          "param": "luminosita",
+          "valore": "20"
+        },
+        {
+          "param": "wait",
+          "valore": "5000"
+        },
+        {
+          "param": "tempTarget",
+          "valore": "24.0"
+        }
+      ]
+    },
+    {
+      "id": "SEQ-03",
+      "displayName": "Uscita di Casa",
+      "comandi": [
+        {
+          "param": "posizione",
+          "valore": "1"
+        },
+        {
+          "param": "tempTarget",
+          "valore": "15.0"
+        },
+        {
+          "param": "wait",
+          "valore": "10000"
+        },
+        {
+          "param": "power",
+          "valore": "OFF"
+        }
+      ]
+    }
+  ]
+}

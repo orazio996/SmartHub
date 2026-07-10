@@ -1,6 +1,7 @@
 package domotica.devices;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -8,19 +9,23 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 /**
  * Simulatore di una Lampadina Smart.
  */
-public class Lampadina implements Runnable{
+public class Lampadina implements Runnable, DispositivoSimulabile{
 	
 	private int porta;
     private String MAC;
     private String tipo;
     private String marca;
     private String modello;
-	private static Map<String, String> stato;
-	//private Map<String, descParam> descrizioneStato
-	
+	private Map<String, String> stato;
+	private boolean statoConnessione = false;
+	private String myIp = "127.0.0.1";
 	// dovrei farmeli inviare dall hub
     private String hubIp = "127.0.0.1";
     private int portMonitoraggio = 5000;
@@ -34,36 +39,63 @@ public class Lampadina implements Runnable{
 		stato = new HashMap<>();
 		//init stato
 		stato.put("luminosita", "0");
-        stato.put("power", "OFF");
-        stato.put("colore", "bianco");
-        stato.put("lampeggio", "0");
+        stato.put("power", "ON");
+        stato.put("colore", "BIANCO");
 	}
 	
 	// metodo invio messaggi
-    private void toHub(String jsonMessaggio) {
+    private void toHub(String jsonMessaggio) throws IOException {
         try (Socket socket = new Socket(hubIp, portMonitoraggio);
              PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-            
             out.println(jsonMessaggio);
             
         } catch (Exception e) {
             System.err.println("[" + MAC + "] Impossibile raggiungere l'Hub per inviare dati.");
+            throw new IOException();
         }
     }
     
     
- // metodo ping ogni 5 secondi
+    public void simulaCambiamentoFisico(String param, String valore) {
+        this.stato.put(param, valore);
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        
+        String json = String.format(
+            "{\"sourceTarget\":\"%s\", \"idTarget\":\"%s\", \"tipo\":\"physicalCmd\", \"parametro\":\"%s\", \"valore\":\"%s\", \"source\":\"system\", \"sourceTimestamp\":\"%s\"}",
+            this.MAC, this.MAC, param, valore, timestamp
+        );
+        
+        try {
+            toHub(json);
+            System.out.println("\n[" + MAC + "] Modifica fisica simulata con successo: " + param + " = " + valore);
+        } catch (IOException e) {
+            System.err.println("\n[" + MAC + "] Errore: Impossibile notificare l'Hub del cambiamento fisico.");
+        }
+    }
+    
+    
+    // metodo ping ogni 5 secondi
     private void pingStart() {
         new Thread(() -> {
             while (true) {
                 try {
                     Thread.sleep(5000); 
-                    
-                    String jsonPing = String.format("{\"idTarget\":\"%s\", \"tipo\":\"PING\"}", MAC);
+                    String jsonPing;
+                    if(statoConnessione) {
+		                jsonPing = String.format("{\"idTarget\":\"%s\", \"tipo\":\"PING\"}", MAC);
+                    }else {
+                    	jsonPing = String.format("{\"idTarget\":\"%s\", \"tipo\":\"PING_SYNC\", \"stato\": %s, \"indirizzo\":\"%s:%s\"}",
+                    			MAC,
+                    			new Gson().toJson(stato),
+                    			myIp,
+                    			porta);
+                    }
                     toHub(jsonPing);
-                    
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                } catch (IOException e) {
+                	System.out.println("[" + MAC + "] Offline.");
+                	statoConnessione = false;
                 }
             }
         }).start();
@@ -74,10 +106,10 @@ public class Lampadina implements Runnable{
     @Override
     public void run() {      
         
-        System.out.println("💡 Dispositivo " + MAC + " Avviato!");
-        System.out.println("🏷️  Tipo: " + tipo + " | Marca: " + marca + " | Modello: " + modello);
-        System.out.println("🔋 Stato iniziale: " + stato);
-        System.out.println("📡 In ascolto sulla porta " + porta + "...\n");
+        System.out.println("Dispositivo " + MAC + " Avviato!");
+        System.out.println("Tipo: " + tipo + " | Marca: " + marca + " | Modello: " + modello);
+        System.out.println("Stato iniziale: " + stato);
+        System.out.println("In ascolto sulla porta " + porta + "...\n");
         
         pingStart();
 
@@ -92,43 +124,52 @@ public class Lampadina implements Runnable{
                     if (richiesta == null) continue; 
 
                     System.out.println("Ricevuto comando: " + richiesta);
-                    
-                    String nuovoValore = "sconosciuto";
-                    String parametro = "sconosciuto";
 
-                    //param
-                    if (richiesta.contains("\"param\":\"")) {
-                        int pStart = richiesta.indexOf("\"param\":\"") + 9;
-                        int pEnd = richiesta.indexOf("\"", pStart);
-                        parametro = richiesta.substring(pStart, pEnd);
+                    JsonObject json = JsonParser.parseString(richiesta).getAsJsonObject();
+                     
+                    String sourceTarget = json.has("sourceTarget") ? json.get("sourceTarget").getAsString() : "sconosciuto";
+                    System.out.println("lampadina " + sourceTarget);
+                    String source = json.has("source") ? json.get("source").getAsString() : "sconosciuto";
+                    String reqType = json.has("tipo") ? json.get("tipo").getAsString() : "sconosciuto";
+                    String sourceTimestamp = json.has("sourceTimestamp") ? json.get("sourceTimestamp").getAsString() : "0";
+                    String parametro = json.has("param") ? json.get("param").getAsString() : "sconosciuto";
+                    String nuovoValore = json.has("val") ? json.get("val").getAsString() : "sconosciuto";
+                    
+                    if(reqType.equals("PING_ACK")) {
+                    	this.statoConnessione = true;
+                    	out.println("{\"status\":\"OK\"}");
+                    	continue;
                     }
-                    //val
-                    if (richiesta.contains("\"val\":\"")) {
-                        int vStart = richiesta.indexOf("\"val\":\"") + 7;
-                        int vEnd = richiesta.indexOf("\"", vStart);
-                        nuovoValore = richiesta.substring(vStart, vEnd);
-                    }
-                    if (!parametro.equals("sconosciuto")) {
+                    if (reqType.contains("Cmd")) {
                         stato.put(parametro, nuovoValore);
                         
                      // invio cambio stato
                         String jsonCambioStato = String.format(
-                            "{\"idTarget\":\"%s\", \"tipo\":\"CAMBIO_STATO\", \"parametro\":\"%s\", \"valore\":\"%s\"}", 
-                            MAC, parametro, nuovoValore
+                            "{\"sourceTarget\":\"%s\", \"idTarget\":\"%s\", \"tipo\":\"%s\", \"parametro\":\"%s\", \"valore\":\"%s\","
+                            + "\"source\":\"%s\", \"sourceTimestamp\":\"%s\"}", 
+                            sourceTarget, MAC, reqType, parametro, nuovoValore, source, sourceTimestamp
                         );
                         toHub(jsonCambioStato);
+                        
+                        System.out.println("[" + MAC + "] Nuovo stato: " + stato);
+
+                        //risposta
+                        String rispostaJson = String.format(
+                            "{\"status\":\"OK\", \"parametro\":\"%s\", \"valore\":\"%s\"}", 
+                            parametro, nuovoValore
+                        );
+                        
+                        out.println(rispostaJson);
+                        System.out.println("[" + MAC + "] Inviata conferma: " + rispostaJson + "\n");
+                        
+                    } else {
+                    	String erroreJson = String.format(
+                            "{\"status\":\"ERROR\", \"msg\":\"Tipo richiesta sconosciuto: %s\"}", 
+                            reqType
+                        );
+                        out.println(erroreJson);
+                        System.err.println("[" + MAC + "] Richiesta rifiutata: " + reqType + "\n");
                     }
-
-                    System.out.println("[HARDWARE] Nuovo stato: " + stato);
-
-                    //risposta
-                    String rispostaJson = String.format(
-                        "{\"status\":\"OK\", \"parametro\":\"%s\", \"valore\":\"%s\"}", 
-                        parametro, nuovoValore
-                    );
-                    
-                    out.println(rispostaJson);
-                    System.out.println("[HARDWARE] Inviata conferma: " + rispostaJson + "\n");
                     
                 } catch (Exception e) {
                     System.err.println("Errore di rete temporaneo: " + e.getMessage());

@@ -1,26 +1,27 @@
 package domotica.domain;
 
+import java.util.Objects;
+
 public class Routine {
     
     private String nome;
     private boolean isAbilitata;
     private Target target;
-    private Comando comando;
+    private ComandoSingolo comando;
     private Trigger trigger;
 
-    public Routine(String nome, Target target, Comando comando, Trigger trigger) {
+    public Routine(String nome, Target target, ComandoSingolo comando, Trigger trigger) {
 
-        if (nome == null || nome.trim().isEmpty()) {
+    	Objects.requireNonNull(nome);
+
+        if (nome.isBlank()) {
             throw new IllegalArgumentException("Il nome della routine non può essere vuoto");
-        }
-        if (target == null || comando == null || trigger == null) {
-            throw new IllegalArgumentException("Target, Comando e Trigger non possono essere nulli");
         }
         
         this.nome = nome;
-        this.target = target;
-        this.comando = comando;
-        this.trigger = trigger;
+        this.target = Objects.requireNonNull(target);
+        this.comando = Objects.requireNonNull(comando);
+        this.trigger = Objects.requireNonNull(trigger);
 
         this.isAbilitata = true; 
     }
@@ -33,7 +34,7 @@ public class Routine {
         return target;
     }
 
-    public Comando getComando() {
+    public ComandoSingolo getComando() {
         return comando;
     }
 

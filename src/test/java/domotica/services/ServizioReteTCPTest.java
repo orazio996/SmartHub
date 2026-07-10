@@ -12,7 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import domotica.domain.Comando;
+import domotica.domain.ComandoSingolo;
 
 public class ServizioReteTCPTest {
 
@@ -34,6 +34,12 @@ public class ServizioReteTCPTest {
             this.tipo = tipo;
             this.eventCount++;
         }
+
+		@Override
+		public void msgErrore(String errore) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     @BeforeEach
@@ -42,8 +48,8 @@ public class ServizioReteTCPTest {
         servizioRete = new ServizioReteTCP(testPort); 
         listener = new TestListener();
         
-        Comando c = new Comando("power", "ON");
-        testReq = new RichiestaSH("cmd", c);
+        ComandoSingolo c = new ComandoSingolo("power", "ON");
+        testReq = new RichiestaSH("sourceTarget","source", "Cmd", System.currentTimeMillis(), c);
     }
 
     @AfterEach

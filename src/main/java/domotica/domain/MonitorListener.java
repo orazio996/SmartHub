@@ -7,8 +7,7 @@ public interface MonitorListener {
     
     /**
      * Si attiva ogni volta che un dispositivo cambia il suo stato.
-     * @param ts: L'oggetto che contiene chi è cambiato, cosa è cambiato, il nuovo ed  il vecchio valore.
      */
     void onEvento(Evento e);
-    
+    void onErrore(String errore);
 }

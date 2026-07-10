@@ -20,10 +20,10 @@ public class RegistroTargets {
      * Aggiunge un nuovo Target al registro.
      */
     public void addTarget(Target t) {
-        if (t == null || t.getId() == null) {
+    	
+        if (t == null) {
             throw new IllegalArgumentException("Il Target o il suo ID non possono essere nulli.");
         }
-        
         if (this.targets.containsKey(t.getId())) {
             throw new IllegalStateException("Errore: Esiste già un target registrato con ID '" + t.getId());
         }

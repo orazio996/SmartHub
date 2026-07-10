@@ -15,6 +15,13 @@ public class Gruppo extends Target {
     private boolean isStanza; // non vogliamo che si scelga 'riscaldamento' come posizione di un dispositivo
     private List<Target> figli;
 
+    public Gruppo(String id, String displayName, boolean isPredef, boolean isStanza) {
+        super(id,displayName);
+        this.isPredef = isPredef;
+        this.isStanza = isStanza;
+        this.figli = new ArrayList<>();
+    }
+    
     public Gruppo(String id, boolean isPredef, boolean isStanza) {
         super(id);
         this.isPredef = isPredef;
@@ -28,13 +35,12 @@ public class Gruppo extends Target {
     public List<Target> getFigli() { return new ArrayList<>(figli); }
 
     public void addTarget(Target t) {
-    	if (t == null) {
-            throw new IllegalArgumentException("Impossibile aggiungere un target nullo al gruppo.");
+    	if (t == null || t.equals(this) || t.getId().equals(this.getId())) {
+            throw new IllegalArgumentException("Impossibile aggiungere se stesso oppure un target nullo.");
         }
-        // Un gruppo non può aggiungere se stesso --> loop infinito!
-        if (!t.getId().equals(this.getId())) { 
             this.figli.add(t);
-        }
+        
+        // if(t.getGruppi().contains(this)) {Impedisci creazione?}
     }
 
     public void removeTarget(Target t) {
@@ -61,7 +67,12 @@ public class Gruppo extends Target {
         
         if (visitati.add(this.getId())) { 
             for (Target t : figli) {
-                res.addAll(t instanceof Gruppo ? ((Gruppo) t).estraiDispositivi(visitati) : t.getDispositivi());
+            	if (t instanceof Gruppo) {
+            	    Gruppo sottoGruppo = (Gruppo) t;
+            	    res.addAll(sottoGruppo.estraiDispositivi(visitati));
+            	} else {
+            	    res.addAll(t.getDispositivi());
+            	}
             }
         }
         return res;
@@ -74,11 +85,11 @@ public class Gruppo extends Target {
      * Se il figlio è un altro Gruppo si attiva la ricorsione!
      */
     @Override
-    public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+    public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
         return new ArrayList<>(estraiCompatibili(c, new HashSet<>()));
     }
 
-    private Set<Dispositivo> estraiCompatibili(Comando c, Set<String> visitati) {
+    private Set<Dispositivo> estraiCompatibili(ComandoSingolo c, Set<String> visitati) {
         Set<Dispositivo> res = new HashSet<>();
         
         if (visitati.add(this.getId())) {

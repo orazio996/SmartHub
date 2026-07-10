@@ -3,6 +3,8 @@ package domotica.app;
 import domotica.domain.*;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
 import java.util.Objects;
 
 public class ControllerRoutines {
@@ -21,7 +23,7 @@ public class ControllerRoutines {
         if (t == null) {
             throw new IllegalArgumentException("Target azione non trovato: " + idTarget);
         }
-        Comando c = new Comando(cmd); 
+        ComandoSingolo c = new ComandoSingolo(cmd); 
         if (t.getDispositiviCompatibili(c).isEmpty()) {
         	throw new IllegalArgumentException("Comando e target non sono compatibili");
         }
@@ -34,8 +36,13 @@ public class ControllerRoutines {
             
         } else if (tipo.equalsIgnoreCase("EVENT")) {
             
-            JsonObject json = JsonParser.parseString(triggerStr).getAsJsonObject();
-            String idTargetOsservato = json.get("targetOsservato").getAsString();
+            String idTargetOsservato;
+			try {
+				JsonObject json = JsonParser.parseString(triggerStr).getAsJsonObject();
+				idTargetOsservato = json.get("targetOsservato").getAsString();
+			} catch (JsonSyntaxException | IllegalArgumentException e) {
+				throw new IllegalArgumentException("Formato trigger non valido", e);
+			}
 
             Target tOss = registroTargets.getTarget(idTargetOsservato);
             if (tOss == null) {
@@ -51,6 +58,6 @@ public class ControllerRoutines {
         Routine r = new Routine(nome, t, c, tr);
         motoreRoutine.addRoutine(r);
         
-        System.out.println("[CONTROLLER ROUTINES] Routine '" + nome + "' assemblata e iniettata nel motore.");
+        System.out.println("[CONTROLLER_ROUTINES] Routine " + nome + " creata con successo");
     }
 }

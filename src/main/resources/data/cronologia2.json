@@ -1,0 +1,117 @@
+{
+"eventi": [
+    {
+        "source": "user",
+        "sourceTimestamp": 1776614400000,
+        "timestamp": 1776614400500,
+        "tipo": "userCmd",
+        "idTarget": "LampadaScrivania",
+        "transizioni": [
+            { "param": "power", "oldVal": "OFF", "newVal": "ON", "idDispositivo": "LampadaScrivania" }
+        ]
+    },
+    {
+        "source": "user",
+        "sourceTimestamp": 1776634200000,
+        "timestamp": 1776634200300,
+        "tipo": "userCmd",
+        "idTarget": "LampadaScrivania",
+        "transizioni": [
+            { "param": "power", "oldVal": "ON", "newVal": "OFF", "idDispositivo": "LampadaScrivania" }
+        ]
+    },
+    {
+        "source": "system",
+        "sourceTimestamp": 1776700000000,
+        "timestamp": 1776700000000,
+        "tipo": "DISCONNESSIONE",
+        "idTarget": "LampadaScrivania",
+        "transizioni": [
+            { "param": "power", "oldVal": "OFF", "newVal": "OFF", "idDispositivo": "LampadaScrivania" }
+        ]
+    },
+    {
+        "source": "system",
+        "sourceTimestamp": 1776705000000,
+        "timestamp": 1776705000000,
+        "tipo": "CONNESSIONE",
+        "idTarget": "LampadaScrivania",
+        "transizioni": [
+            { "param": "power", "oldVal": "OFF", "newVal": "OFF", "idDispositivo": "LampadaScrivania" }
+        ]
+    },
+    {
+        "source": "user",
+        "sourceTimestamp": 1776710000000,
+        "timestamp": 1776710000250,
+        "tipo": "userCmd",
+        "idTarget": "Luci",
+        "transizioni": [
+            { "param": "power", "oldVal": "OFF", "newVal": "ON", "idDispositivo": "LampadaSalotto" },
+            { "param": "colore", "oldVal": "BIANCO", "newVal": "BLU", "idDispositivo": "LampadaSalotto" },
+            { "param": "luminosita", "oldVal": "100", "newVal": "50", "idDispositivo": "LampadaSalotto" }
+        ]
+    },
+    {
+        "source": "system",
+        "sourceTimestamp": 1776715000000,
+        "timestamp": 1776715000000,
+        "tipo": "sensorCmd",
+        "idTarget": "SensoreClima",
+        "transizioni": [
+            { "param": "temperatura", "oldVal": "20.5", "newVal": "21.2", "idDispositivo": "SensoreClima" },
+            { "param": "umidita", "oldVal": "50", "newVal": "55", "idDispositivo": "SensoreClima" }
+        ]
+    },
+    {
+        "source": "routine",
+        "sourceTimestamp": 1776720000000,
+        "timestamp": 1776720000400,
+        "tipo": "routineCmd",
+        "idTarget": "TermostatoSalotto",
+        "transizioni": [
+            { "param": "tempTarget", "oldVal": "20.0", "newVal": "22.5", "idDispositivo": "TermostatoSalotto" }
+        ]
+    },
+    {
+        "source": "user",
+        "sourceTimestamp": 1776750000000,
+        "timestamp": 1776750000600,
+        "tipo": "userCmd",
+        "idTarget": "Serranda",
+        "transizioni": [
+            { "param": "posizione", "oldVal": "0", "newVal": "100", "idDispositivo": "Serranda" }
+        ]
+    },
+    {
+        "source": "system",
+        "sourceTimestamp": 1776800000000,
+        "timestamp": 1776800000000,
+        "tipo": "sensorCmd",
+        "idTarget": "SensoreClima",
+        "transizioni": [
+            { "param": "temperatura", "oldVal": "21.2", "newVal": "22.5", "idDispositivo": "SensoreClima" }
+        ]
+    },
+    {
+        "source": "user",
+        "sourceTimestamp": 1776850000000,
+        "timestamp": 1776850000150,
+        "tipo": "userCmd",
+        "idTarget": "LampadaScrivania",
+        "transizioni": [
+            { "param": "power", "oldVal": "ON", "newVal": "OFF", "idDispositivo": "LampadaScrivania" }
+        ]
+    },
+    {
+        "source": "user",
+        "sourceTimestamp": 1776850000000,
+        "timestamp": 1776850000300,
+        "tipo": "userCmd",
+        "idTarget": "LampadaSalotto",
+        "transizioni": [
+            { "param": "power", "oldVal": "ON", "newVal": "OFF", "idDispositivo": "LampadaSalotto" }
+        ]
+    }
+    ]
+}

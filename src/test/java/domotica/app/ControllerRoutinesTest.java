@@ -29,7 +29,7 @@ class ControllerRoutinesTest {
         @Override
         public List<Dispositivo> getDispositivi() { return null; }
         @Override
-        public List<Dispositivo> getDispositiviCompatibili(Comando c) { 
+        public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) { 
         	if(c.getParam().equals("Incompatibile")) {
         		return List.of();
         	}

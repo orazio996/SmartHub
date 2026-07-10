@@ -1,0 +1,99 @@
+{
+  "dispositivi": [
+    {
+        "id": "LampadaScrivania",
+        "displayName": "LampadaScrivania",
+        "indirizzoRete": "127.0.0.1:8080",
+        "potenza": "0.009",
+        "descrizione": {
+        "marca": "Philips Hue", "tipo": "Lampadina", "modello": "Hue White 9W",
+        "parametri": [
+            {"nome": "power", "tipo": "string", "unitaMisura":"", "readOnly": false, "min":"", "max":"", "valoriAmmessi": ["ON", "OFF"]}
+        ]
+        }
+    },
+    {
+        "id": "LampadaSalotto",
+        "displayName": "LampadaSalotto",
+        "indirizzoRete": "127.0.0.1:8081",
+        "potenza": "0.015",
+        "descrizione": {
+        "marca": "Philips Hue", "tipo": "Lampadina RGB", "modello": "Hue Color 15W",
+        "parametri": [
+            {"nome": "power", "tipo": "string", "unitaMisura": "", "readOnly": false, "min": "", "max": "", "valoriAmmessi": ["ON", "OFF"]},
+            {"nome": "luminosita", "tipo": "int", "unitaMisura": "%", "readOnly": false, "min": "0", "max": "100", "valoriAmmessi": []},
+            {"nome": "colore", "tipo": "string", "unitaMisura": "", "readOnly": false, "min": "", "max": "", "valoriAmmessi": ["BIANCO", "ROSSO", "VERDE", "BLU"]}
+        ]
+        }
+    },
+    {
+        "id": "TermostatoSalotto",
+        "displayName": "TermostatoSalotto",
+        "indirizzoRete": "127.0.0.1:8090",
+        "potenza": "2.5",
+        "descrizione": {
+        "marca": "Samsung", "tipo": "Termostato", "modello": "SuperWarm 2000X",
+        "parametri": [
+            {"nome": "power", "tipo": "string", "unitaMisura": "", "readOnly": false, "min": "", "max": "", "valoriAmmessi": ["ON", "OFF"]},
+            {"nome": "tempTarget", "tipo": "float", "unitaMisura": "°C", "readOnly": false, "min": "15", "max": "35", "valoriAmmessi": []},
+            {"nome": "tempCorrente", "tipo": "float", "unitaMisura": "°C", "readOnly": true, "min": "", "max": "", "valoriAmmessi": []}
+        ]
+        }
+    },
+    {
+        "id": "SensoreClima",
+        "displayName": "SensoreClima",
+        "indirizzoRete": "127.0.0.1:8091",
+        "potenza": "0.01",
+        "descrizione": {
+        "marca": "Samssung", "tipo": "Sensore", "modello": "st234",
+        "parametri": [
+            {"nome": "temperatura", "tipo": "float", "unitaMisura": "°C", "readOnly": true, "min": "", "max": "", "valoriAmmessi": []},
+            {"nome": "umidita", "tipo": "int", "unitaMisura": "%", "readOnly": true, "min": "0", "max": "100", "valoriAmmessi": []}
+        ]
+        }
+    },
+    {
+        "id": "Serranda",
+        "displayName": "Serranda",
+        "indirizzoRete": "127.0.0.1:8092",
+        "potenza": "0.30",
+        "descrizione": {
+        "marca": "SuperHome", "tipo": "SerrandaSmart", "modello": "3TMega",
+        "parametri": [
+            {"nome": "posizione", "tipo": "int", "unitaMisura": "%", "readOnly": false, "min": "0", "max": "100", "valoriAmmessi": []}
+        ]
+        }
+    }
+  ],
+  "gruppi": [
+    {
+      "id": "Studio",
+      "displayName": "Studio",
+      "predefinito": false,
+      "stanza": true,
+      "membri": ["LampadaScrivania", "SensoreClima"]
+    },
+    {
+      "id": "Salotto",
+      "displayName": "Salotto",
+      "predefinito": false,
+      "stanza": true,
+      "membri": ["LampadaSalotto", "TermostatoSalotto", "Serranda"]
+    },
+    {
+      "id": "Luci",
+      "displayName": "Luci",
+      "predefinito": true,
+      "stanza": false,
+      "membri": ["LampadaScrivania", "LampadaSalotto"]
+    },
+    {
+      "id": "Clima",
+      "displayName": "Clima",
+      "predefinito": true,
+      "stanza": false,
+      "membri": ["TermostatoSalotto", "SensoreClima"]
+    }
+  ]
+}

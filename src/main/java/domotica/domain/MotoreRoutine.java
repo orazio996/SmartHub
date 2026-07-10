@@ -44,13 +44,17 @@ public class MotoreRoutine implements MonitorListener {
         long delay = trigger.getDelay();
         
         scheduler.schedule(() -> {
-            if (r.isAbilitata()) {
-            	ct.eseguiComando(r.getComando().getParam(), r.getComando().getValore(), r.getTarget().getId());
-            }
-            
-            // scheduling ricorsivo
-            schedule(r);
-            
+        	try {
+        		if (r.isAbilitata()) {
+        			ct.eseguiComando(r.getComando(), r.getTarget().getId(), "routine");
+        		}
+			} catch (Exception e) {
+				System.err.println("Errore routineTemporale: " + r.toString());
+				e.printStackTrace();
+			} finally {
+				// scheduling ricorsivo
+				schedule(r);
+			}   
         }, delay, TimeUnit.MILLISECONDS);
     }
 
@@ -59,11 +63,16 @@ public class MotoreRoutine implements MonitorListener {
      */
     @Override
     public void onEvento(Evento e) {
-        if(e.getTipo().equals("CAMBIO_STATO")) {
+        if(e.getTipo().contains("Cmd")) {
         	for (Routine r : routines) {
         		for (TransizioneStato ts : e.getTransizioni()) {
 	                if (r.isAbilitata() && r.getTrigger().isSoddisfatto(ts)) {
-	                    ct.eseguiComando(r.getComando().getParam(), r.getComando().getValore(), r.getTarget().getId());
+	                    try {
+							ct.eseguiComando(r.getComando(), r.getTarget().getId(), "routine");
+						} catch (Exception e1) {
+							System.err.println("Errore routineStato: " + r.toString());
+							e1.printStackTrace();
+						}
 	                }
         		}
             }
@@ -71,6 +80,10 @@ public class MotoreRoutine implements MonitorListener {
     }
 
 
+    public void onErrore(String errore) {
+    	// niente 
+    }
+    
     /**
      * Metodo per spegnere il motore in modo pulito 
      */

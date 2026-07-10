@@ -45,7 +45,7 @@ public class TargetTest {
             }
 
             @Override
-            public List<Dispositivo> getDispositiviCompatibili(Comando c) {
+            public List<Dispositivo> getDispositiviCompatibili(ComandoSingolo c) {
                 return null;
             }
         };

@@ -45,9 +45,7 @@ public class DescParametro {
      */
     public boolean isValoreValido(String valore) {
         // Se è un sensore non si puo cambiare il valore!
-        if (this.readOnly) {
-            return false;
-        }
+        if (this.readOnly) { return false; }
         // Controllo dei valori accettabili
         if (!this.valoriAccettati.isEmpty()) {
             return this.valoriAccettati.contains(valore);

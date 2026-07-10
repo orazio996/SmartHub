@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="domotica.ui.fx.MainController">
+   
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Sistema">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Impostazioni" />
+              <MenuItem mnemonicParsing="false" text="Esci" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Funzioni Domotiche">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Crea Routine" onAction="#apriFormRoutine" />
+              <MenuItem fx:id="menuReports" mnemonicParsing="false" text="Archivio Reports" onAction="#apriArchivioReports" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+
+   <left>
+      <TreeView fx:id="alberoTargets" prefHeight="575.0" prefWidth="250.0" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </TreeView>
+   </left>
+
+   <center>
+      <StackPane fx:id="contenitoreCentrale" style="-fx-background-color: #f9f9f9;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </StackPane>
+   </center>
+
+   <bottom>
+      <VBox spacing="5.0" style="-fx-border-color: #bdc3c7; -fx-border-width: 1 0 0 0; -fx-background-color: #ecf0f1; -fx-padding: 10;" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+               <Label text="Eventi Sessione" style="-fx-font-weight: bold; -fx-text-fill: #34495e;" />
+               <javafx.scene.layout.Region HBox.hgrow="ALWAYS" /> 
+               <Button text="↩ Annulla Ultimo Comando" onAction="#annullaComando" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+            </HBox>
+            <ListView fx:id="listaCronologia" prefHeight="180.0" style="-fx-font-family: 'Consolas', monospace; -fx-font-size: 12px;" />
+         </children>
+      </VBox>
+   </bottom>
+  
+</BorderPane>

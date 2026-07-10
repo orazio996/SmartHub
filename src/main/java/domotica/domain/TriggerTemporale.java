@@ -1,6 +1,8 @@
 package domotica.domain;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,12 +21,17 @@ public class TriggerTemporale extends Trigger {
     }
 
     public TriggerTemporale(String triggerJson) {
-        if (triggerJson == null || triggerJson.trim().isEmpty()) {
+        if (triggerJson == null || triggerJson.isBlank()) {
             throw new IllegalArgumentException("La stringa JSON del trigger temporale non può essere vuota");
         }
         
-        Gson gson = new Gson();
-        DatiTriggerTemporale dati = gson.fromJson(triggerJson, DatiTriggerTemporale.class);
+        DatiTriggerTemporale dati;
+		try {
+			Gson gson = new Gson();
+			dati = gson.fromJson(triggerJson, DatiTriggerTemporale.class);
+		} catch (JsonSyntaxException e) {
+			throw new IllegalArgumentException("Formato trigger non valido" + e);
+		}
         
         if (dati == null || dati.orario == null) {
             throw new IllegalArgumentException("Il JSON del trigger temporale deve contenere 'orarioTarget'");
@@ -54,7 +61,6 @@ public class TriggerTemporale extends Trigger {
     public long getDelay() {
         LocalDateTime now = LocalDateTime.now();
         
-        //Scenario A: l'utente non ha selezionato nessun giorno, la routine viene eseguita una volta sola
         if (giorniRipetizione == null || giorniRipetizione.isEmpty()) {
             LocalDateTime nextRun = now.toLocalDate().atTime(orario);
             if (now.isAfter(nextRun) || now.isEqual(nextRun)) {
@@ -63,10 +69,8 @@ public class TriggerTemporale extends Trigger {
             return ChronoUnit.MILLIS.between(now, nextRun);
         }
 
-        // Scenario B: Più giorni selezionati. Cerchiamo il prossimo giorno valido nel calendario
         LocalDateTime candidato = now.toLocalDate().atTime(orario);
-        
-        // controlliamo giorno per giorno
+
         for (int i = 0; i <= 7; i++) {
             DayOfWeek giornoEsaminato = candidato.getDayOfWeek();
             
